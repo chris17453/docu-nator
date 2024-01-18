@@ -1,0 +1,4 @@
+.vscode*
+.vscode-upload.json
+_build
+_temp

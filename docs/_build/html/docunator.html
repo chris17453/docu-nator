@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>docunator package &mdash; docu-nator 1.00 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=da1d7f10"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            docu-nator
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">docunator package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-docunator.helpers">docunator.helpers module</a><ul>
+<li><a class="reference internal" href="#docunator.helpers.check_files_exist_and_readable"><code class="docutils literal notranslate"><span class="pre">check_files_exist_and_readable()</span></code></a></li>
+<li><a class="reference internal" href="#docunator.helpers.get_python_files"><code class="docutils literal notranslate"><span class="pre">get_python_files()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-docunator.main">docunator.main module</a></li>
+<li><a class="reference internal" href="#module-docunator.parse">docunator.parse module</a><ul>
+<li><a class="reference internal" href="#docunator.parse.FunctionAnalyzer"><code class="docutils literal notranslate"><span class="pre">FunctionAnalyzer</span></code></a><ul>
+<li><a class="reference internal" href="#docunator.parse.FunctionAnalyzer.add_arg"><code class="docutils literal notranslate"><span class="pre">FunctionAnalyzer.add_arg()</span></code></a></li>
+<li><a class="reference internal" href="#docunator.parse.FunctionAnalyzer.add_class"><code class="docutils literal notranslate"><span class="pre">FunctionAnalyzer.add_class()</span></code></a></li>
+<li><a class="reference internal" href="#docunator.parse.FunctionAnalyzer.add_func"><code class="docutils literal notranslate"><span class="pre">FunctionAnalyzer.add_func()</span></code></a></li>
+<li><a class="reference internal" href="#docunator.parse.FunctionAnalyzer.add_ret"><code class="docutils literal notranslate"><span class="pre">FunctionAnalyzer.add_ret()</span></code></a></li>
+<li><a class="reference internal" href="#docunator.parse.FunctionAnalyzer.add_var"><code class="docutils literal notranslate"><span class="pre">FunctionAnalyzer.add_var()</span></code></a></li>
+<li><a class="reference internal" href="#docunator.parse.FunctionAnalyzer.get_binop_type"><code class="docutils literal notranslate"><span class="pre">FunctionAnalyzer.get_binop_type()</span></code></a></li>
+<li><a class="reference internal" href="#docunator.parse.FunctionAnalyzer.get_dict_keys"><code class="docutils literal notranslate"><span class="pre">FunctionAnalyzer.get_dict_keys()</span></code></a></li>
+<li><a class="reference internal" href="#docunator.parse.FunctionAnalyzer.get_function_call_path"><code class="docutils literal notranslate"><span class="pre">FunctionAnalyzer.get_function_call_path()</span></code></a></li>
+<li><a class="reference internal" href="#docunator.parse.FunctionAnalyzer.get_obj"><code class="docutils literal notranslate"><span class="pre">FunctionAnalyzer.get_obj()</span></code></a></li>
+<li><a class="reference internal" href="#docunator.parse.FunctionAnalyzer.get_scope"><code class="docutils literal notranslate"><span class="pre">FunctionAnalyzer.get_scope()</span></code></a></li>
+<li><a class="reference internal" href="#docunator.parse.FunctionAnalyzer.get_type"><code class="docutils literal notranslate"><span class="pre">FunctionAnalyzer.get_type()</span></code></a></li>
+<li><a class="reference internal" href="#docunator.parse.FunctionAnalyzer.visit_Assign"><code class="docutils literal notranslate"><span class="pre">FunctionAnalyzer.visit_Assign()</span></code></a></li>
+<li><a class="reference internal" href="#docunator.parse.FunctionAnalyzer.visit_ClassDef"><code class="docutils literal notranslate"><span class="pre">FunctionAnalyzer.visit_ClassDef()</span></code></a></li>
+<li><a class="reference internal" href="#docunator.parse.FunctionAnalyzer.visit_FunctionDef"><code class="docutils literal notranslate"><span class="pre">FunctionAnalyzer.visit_FunctionDef()</span></code></a></li>
+<li><a class="reference internal" href="#docunator.parse.FunctionAnalyzer.visit_Module"><code class="docutils literal notranslate"><span class="pre">FunctionAnalyzer.visit_Module()</span></code></a></li>
+<li><a class="reference internal" href="#docunator.parse.FunctionAnalyzer.visit_Return"><code class="docutils literal notranslate"><span class="pre">FunctionAnalyzer.visit_Return()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#docunator.parse.parse"><code class="docutils literal notranslate"><span class="pre">parse()</span></code></a></li>
+<li><a class="reference internal" href="#docunator.parse.read_file"><code class="docutils literal notranslate"><span class="pre">read_file()</span></code></a></li>
+<li><a class="reference internal" href="#docunator.parse.walk_data"><code class="docutils literal notranslate"><span class="pre">walk_data()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-docunator.patch">docunator.patch module</a><ul>
+<li><a class="reference internal" href="#docunator.patch.create_patch"><code class="docutils literal notranslate"><span class="pre">create_patch()</span></code></a></li>
+<li><a class="reference internal" href="#docunator.patch.find_function_end"><code class="docutils literal notranslate"><span class="pre">find_function_end()</span></code></a></li>
+<li><a class="reference internal" href="#docunator.patch.format_docstring"><code class="docutils literal notranslate"><span class="pre">format_docstring()</span></code></a></li>
+<li><a class="reference internal" href="#docunator.patch.get_indentation"><code class="docutils literal notranslate"><span class="pre">get_indentation()</span></code></a></li>
+<li><a class="reference internal" href="#docunator.patch.inject_docstring"><code class="docutils literal notranslate"><span class="pre">inject_docstring()</span></code></a></li>
+<li><a class="reference internal" href="#docunator.patch.patch"><code class="docutils literal notranslate"><span class="pre">patch()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-docunator.summarize">docunator.summarize module</a><ul>
+<li><a class="reference internal" href="#docunator.summarize.summarize"><code class="docutils literal notranslate"><span class="pre">summarize</span></code></a><ul>
+<li><a class="reference internal" href="#docunator.summarize.summarize.generate"><code class="docutils literal notranslate"><span class="pre">summarize.generate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-docunator">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">docu-nator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">docunator package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/docunator.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="docunator-package">
+<h1>docunator package<a class="headerlink" href="#docunator-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-docunator.helpers">
+<span id="docunator-helpers-module"></span><h2>docunator.helpers module<a class="headerlink" href="#module-docunator.helpers" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="docunator.helpers.check_files_exist_and_readable">
+<span class="sig-prename descclassname"><span class="pre">docunator.helpers.</span></span><span class="sig-name descname"><span class="pre">check_files_exist_and_readable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/docunator/helpers.html#check_files_exist_and_readable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docunator.helpers.check_files_exist_and_readable" title="Link to this definition"></a></dt>
+<dd><p>Checks if all given files exist and are readable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>files</strong> (<em>list</em>) – List of file paths to check.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>A dictionary with file paths as keys and boolean values indicating</dt><dd><p>whether the file exists and is readable.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>None</strong> – </p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function does not handle errors when a file does not exist or is not readable.
+It simply returns False for those files.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docunator.helpers.get_python_files">
+<span class="sig-prename descclassname"><span class="pre">docunator.helpers.</span></span><span class="sig-name descname"><span class="pre">get_python_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/docunator/helpers.html#get_python_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docunator.helpers.get_python_files" title="Link to this definition"></a></dt>
+<dd><p>Gets a list of all Python files in the given directory and its subdirectories.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>directory</strong> (<em>str</em>) – The directory to search for Python files.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of absolute paths to all Python files in the given directory and its subdirectories.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>None</strong> – </p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function uses the os.walk() function to recursively traverse the directory tree and find all files with the .py extension.</p>
+</dd></dl>
+
+</section>
+<section id="module-docunator.main">
+<span id="docunator-main-module"></span><h2>docunator.main module<a class="headerlink" href="#module-docunator.main" title="Link to this heading"></a></h2>
+</section>
+<section id="module-docunator.parse">
+<span id="docunator-parse-module"></span><h2>docunator.parse module<a class="headerlink" href="#module-docunator.parse" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="docunator.parse.FunctionAnalyzer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docunator.parse.</span></span><span class="sig-name descname"><span class="pre">FunctionAnalyzer</span></span><a class="reference internal" href="_modules/docunator/parse.html#FunctionAnalyzer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docunator.parse.FunctionAnalyzer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">NodeVisitor</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="docunator.parse.FunctionAnalyzer.add_arg">
+<span class="sig-name descname"><span class="pre">add_arg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scope</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">has_default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/docunator/parse.html#FunctionAnalyzer.add_arg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docunator.parse.FunctionAnalyzer.add_arg" title="Link to this definition"></a></dt>
+<dd><p>Adds an argument to an object’s list of arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scope</strong> (<em>str</em>) – The name of the scope (context) in which the argument is defined.</p></li>
+<li><p><strong>arg</strong> (<em>str</em>) – The name of the argument.</p></li>
+<li><p><strong>default</strong> (<em>Any</em>) – The default value for the argument, if it has one. This is an optional argument.</p></li>
+<li><p><strong>has_default</strong> (<em>bool</em><em>, </em><em>optional</em>) – A boolean indicating whether the argument has a default value. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None. This function modifies the given object in place.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>KeyError</strong> – If the given scope is not found in the object.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function modifies the given object directly, so it should be used with caution.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docunator.parse.FunctionAnalyzer.add_class">
+<span class="sig-name descname"><span class="pre">add_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scope</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/docunator/parse.html#FunctionAnalyzer.add_class"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docunator.parse.FunctionAnalyzer.add_class" title="Link to this definition"></a></dt>
+<dd><p>Adds a new class to an object in the given scope.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scope</strong> (<em>str</em>) – The name of the scope to search for the object.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name of the new class to be added.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None. The function modifies the object in the given scope.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>KeyError</strong> – If the scope does not exist.</p></li>
+<li><p><strong>TypeError</strong> – If the scope is not a dictionary.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The function assumes that the object in the given scope is a dictionary.
+If the class with the given name already exists, it is not overwritten.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docunator.parse.FunctionAnalyzer.add_func">
+<span class="sig-name descname"><span class="pre">add_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scope</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/docunator/parse.html#FunctionAnalyzer.add_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docunator.parse.FunctionAnalyzer.add_func" title="Link to this definition"></a></dt>
+<dd><p>Adds a function definition to a given scope in a symbol table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scope</strong> (<em>str</em>) – The name of the scope in which to add the function.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name of the function to add.</p></li>
+<li><p><strong>start</strong> (<em>int</em>) – The line number at which the function starts.</p></li>
+<li><p><strong>end</strong> (<em>int</em>) – The line number at which the function ends.</p></li>
+<li><p><strong>column</strong> (<em>int</em>) – The column number at which the function starts.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None. The function simply modifies the given symbol table.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>KeyError</strong> – If the given scope is not present in the symbol table.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>If the given scope is not present in the symbol table, an error is raised.
+If the function with the given name already exists in the scope, it is overwritten.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docunator.parse.FunctionAnalyzer.add_ret">
+<span class="sig-name descname"><span class="pre">add_ret</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scope</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/docunator/parse.html#FunctionAnalyzer.add_ret"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docunator.parse.FunctionAnalyzer.add_ret" title="Link to this definition"></a></dt>
+<dd><p>Adds a value to a list of returns for a given scope.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scope</strong> (<em>str</em>) – The name of the scope to add the return to.</p></li>
+<li><p><strong>value</strong> (<em>any</em>) – The value to be added to the list of returns.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None. This function modifies the existing dictionary for the given scope.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>KeyError</strong> – If the given scope does not exist.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function assumes that the dictionary for the given scope has a key named ‘ret’ which is a list.
+If the key ‘ret’ does not exist, it will be created with an empty list.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docunator.parse.FunctionAnalyzer.add_var">
+<span class="sig-name descname"><span class="pre">add_var</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scope</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/docunator/parse.html#FunctionAnalyzer.add_var"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docunator.parse.FunctionAnalyzer.add_var" title="Link to this definition"></a></dt>
+<dd><p>Adds a variable to the given scope’s dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scope</strong> (<em>str</em>) – The name of the scope (e.g. ‘global’ or ‘local’).</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name of the variable to add.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>KeyError</strong> – If the given scope is not found.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>If the scope’s dictionary does not already contain a ‘vars’ key, one will be created and the variable will be added to it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docunator.parse.FunctionAnalyzer.get_binop_type">
+<span class="sig-name descname"><span class="pre">get_binop_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/docunator/parse.html#FunctionAnalyzer.get_binop_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docunator.parse.FunctionAnalyzer.get_binop_type" title="Link to this definition"></a></dt>
+<dd><p>Determines the type of binary operation based on the types of its operands.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – An instance of the Abstract Syntax Tree (AST) class.</p></li>
+<li><p><strong>node</strong> – A node from the abstract syntax tree representing a binary operation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The type of the binary operation. Can be either ‘int’, ‘float’, or ‘mixed’.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>None</strong> – </p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function is used by the TypeChecker class to ensure type compatibility
+during type checking.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docunator.parse.FunctionAnalyzer.get_dict_keys">
+<span class="sig-name descname"><span class="pre">get_dict_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/docunator/parse.html#FunctionAnalyzer.get_dict_keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docunator.parse.FunctionAnalyzer.get_dict_keys" title="Link to this definition"></a></dt>
+<dd><p>Returns the keys of a dictonary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<em>ast.AST</em>) – The node from which to retrieve dictionary keys.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A comma-separated string of the keys in the dictionary represented by the node.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>None</strong> – </p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function retrieves the keys of a given dictionary node and returns them as a comma-separated string.
+The keys can be string literals, variable names, or constants.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docunator.parse.FunctionAnalyzer.get_function_call_path">
+<span class="sig-name descname"><span class="pre">get_function_call_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/docunator/parse.html#FunctionAnalyzer.get_function_call_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docunator.parse.FunctionAnalyzer.get_function_call_path" title="Link to this definition"></a></dt>
+<dd><p>Constructs the full function call path from an ast node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<em>ast.Call</em>) – The AST node representing a function call.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The full function call path as a string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>None</strong> – </p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>If the node represents a simple function call (i.e., a function call with no dotted notation),
+the method returns the function name as the call path.</p>
+<p>If the node represents a method call or an attribute of an object/module,
+the method recursively calls itself with the value of the object/module as the argument,
+and appends the attribute/method name to the returned call path using a ‘.’ separator.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docunator.parse.FunctionAnalyzer.get_obj">
+<span class="sig-name descname"><span class="pre">get_obj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scope</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/docunator/parse.html#FunctionAnalyzer.get_obj"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docunator.parse.FunctionAnalyzer.get_obj" title="Link to this definition"></a></dt>
+<dd><p>Gets the multi-dimentional object based on dot style location in scope.
+:param self: An instance of the class.
+:param scope: A string representing the scope of the object to get. The string should be in the format “var.var.var…” or “func.func.func…” or “class.class.class…”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The object that matches the given scope.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>KeyError</strong> – If the given scope cannot be found in the data dictionary of the instance.</p></li>
+<li><p><strong>ValueError</strong> – If the given scope is an empty string or has no parts.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function searches for the given scope in the data dictionary of the instance. It uses the given scope string to traverse the dictionary by splitting it into parts and checking if each part is a key in the current object. If a part is found, the function moves to the next part until the final object is reached. If a part is not found, an error is raised.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docunator.parse.FunctionAnalyzer.get_scope">
+<span class="sig-name descname"><span class="pre">get_scope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">append</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/docunator/parse.html#FunctionAnalyzer.get_scope"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docunator.parse.FunctionAnalyzer.get_scope" title="Link to this definition"></a></dt>
+<dd><p>Gets the current scope for the given object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – The object for which to get the scope.</p></li>
+<li><p><strong>append</strong> – An optional string representing a new scope element to add to the
+current scope. If None, the current scope is returned as a string.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A string representing the current scope for the given object. If append is
+provided, the new scope is returned as a string with the new element
+appended.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>None</strong> – </p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The scope is represented as a list of strings, where each string is the
+name of a containing namespace. The first element is always the global
+namespace.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docunator.parse.FunctionAnalyzer.get_type">
+<span class="sig-name descname"><span class="pre">get_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/docunator/parse.html#FunctionAnalyzer.get_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docunator.parse.FunctionAnalyzer.get_type" title="Link to this definition"></a></dt>
+<dd><p>This function determines the type of a given node in an Abstract Syntax Tree (AST).</p>
+<p>The node can be a call, name, string, number, list, dictionary, constant, boolean operation,
+binary operation, comparison, or function call.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<em>ast.Node</em>) – The node to determine the type of.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary with the keys ‘type’ and ‘value’ if the node is a variable, function, class, or dictionary key.
+A string representing the type if the node is a basic type (int, float, str, list, dict, function, class, or unknown).</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>None</strong> – </p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>If the node is a variable, the value is the variable name.</p></li>
+<li><p>If the node is a function, the value is the function name.</p></li>
+<li><p>If the node is a class, the value is the class name.</p></li>
+<li><p>If the node is a dictionary key, the value is the key string.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docunator.parse.FunctionAnalyzer.visit_Assign">
+<span class="sig-name descname"><span class="pre">visit_Assign</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/docunator/parse.html#FunctionAnalyzer.visit_Assign"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docunator.parse.FunctionAnalyzer.visit_Assign" title="Link to this definition"></a></dt>
+<dd><p>Visits an Assign node in an Abstract Syntax Tree (AST). Assigns variables based on targets in the node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<em>ASTVisitor</em>) – The instance of the ASTVisitor class.</p></li>
+<li><p><strong>node</strong> (<em>ast.Assign</em>) – The node to visit.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>None.</strong> – </p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function visits an Assign node in an Abstract Syntax Tree (AST) and assigns variables based on the targets in the node.
+If a target is an attribute, the variable name is in the format “variable_name.attribute_name”.
+If a target is a Name, the variable name is simply “variable_name”.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docunator.parse.FunctionAnalyzer.visit_ClassDef">
+<span class="sig-name descname"><span class="pre">visit_ClassDef</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/docunator/parse.html#FunctionAnalyzer.visit_ClassDef"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docunator.parse.FunctionAnalyzer.visit_ClassDef" title="Link to this definition"></a></dt>
+<dd><p>Visits a ClassDef node in the Abstract Syntax Tree (AST).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<em>ast.ClassDef</em>) – The node to visit.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>None</strong> – </p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function is called when visiting a ClassDef node in the Abstract Syntax Tree (AST).
+It sets up the necessary data structures for the class, such as the scope and nesting level.
+It also adds the class to the symbol table and calls the generic visit method to process the class body.
+Finally, it cleans up the scope and nesting level.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docunator.parse.FunctionAnalyzer.visit_FunctionDef">
+<span class="sig-name descname"><span class="pre">visit_FunctionDef</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/docunator/parse.html#FunctionAnalyzer.visit_FunctionDef"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docunator.parse.FunctionAnalyzer.visit_FunctionDef" title="Link to this definition"></a></dt>
+<dd><p>Visits a FunctionDef node in the abstract syntax tree.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<em>ast.FunctionDef</em>) – The node to visit.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>None.</strong> – </p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function is responsible for adding function definitions to the symbol table.
+It also handles adding arguments to the symbol table.</p>
+<p>The function takes a FunctionDef node as an argument. The node contains information about the name,
+arguments, and body of the function.</p>
+<p>The function first adds the function to the symbol table with its scope, name, start and end line numbers,
+and column offset. It then handles adding the function’s arguments to the symbol table.</p>
+<p>The function uses helper methods get_scope(), add_func(), add_arg(), and defined_functions to perform these tasks.</p>
+<p>The function also handles nested functions by adding their scopes to the defined_functions list and updating the nesting level.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docunator.parse.FunctionAnalyzer.visit_Module">
+<span class="sig-name descname"><span class="pre">visit_Module</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/docunator/parse.html#FunctionAnalyzer.visit_Module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docunator.parse.FunctionAnalyzer.visit_Module" title="Link to this definition"></a></dt>
+<dd><p>Visits a given ast.Module node and recursively visits its body elements.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<em>ast.Module</em>) – The ast.Module node to visit.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>None.</strong> – </p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function is a part of the AstVisitor class and is responsible for visiting
+ast.Module nodes. It iterates through the body of the node and visits each
+ast.ClassDef or ast.FunctionDef element. For other types of elements, it calls
+the visit method of the AstVisitor instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docunator.parse.FunctionAnalyzer.visit_Return">
+<span class="sig-name descname"><span class="pre">visit_Return</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/docunator/parse.html#FunctionAnalyzer.visit_Return"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docunator.parse.FunctionAnalyzer.visit_Return" title="Link to this definition"></a></dt>
+<dd><p>Visits a return statement node in the abstract syntax tree.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> – ast.Return: The node representing the return statement.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None. This method updates the symbol table and the return type.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>None.</strong> – </p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This method gets the type of the return value and adds it to the current scope.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docunator.parse.parse">
+<span class="sig-prename descclassname"><span class="pre">docunator.parse.</span></span><span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/docunator/parse.html#parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docunator.parse.parse" title="Link to this definition"></a></dt>
+<dd><p>Parses a Python file and returns a list of dictionaries containing information about each function and class in the file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_path</strong> (<em>str</em>) – The path to the Python file to be parsed.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of dictionaries, where each dictionary contains information about a function or class in the file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>FileNotFoundError</strong> – If the specified file does not exist.</p></li>
+<li><p><strong>SyntaxError</strong> – If there is a syntax error in the file.</p></li>
+<li><p><strong>TypeError</strong> – If the file path is not a string.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The ‘contents’ and ‘data’ variables are used internally and are not part of the public API.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docunator.parse.read_file">
+<span class="sig-prename descclassname"><span class="pre">docunator.parse.</span></span><span class="sig-name descname"><span class="pre">read_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/docunator/parse.html#read_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docunator.parse.read_file" title="Link to this definition"></a></dt>
+<dd><p>Reads the content of a file and returns it as a string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_path</strong> (<em>str</em>) – The path to the file to be read.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The content of the file as a string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>FileNotFoundError</strong> – If the file does not exist at the provided path.</p></li>
+<li><p><strong>Exception</strong> – If any other error occurs while reading the file.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function uses the built-in <cite>open()</cite> function to read the content of a file.
+It returns an error message if the file is not found or an error occurs during reading.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docunator.parse.walk_data">
+<span class="sig-prename descclassname"><span class="pre">docunator.parse.</span></span><span class="sig-name descname"><span class="pre">walk_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/docunator/parse.html#walk_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docunator.parse.walk_data" title="Link to this definition"></a></dt>
+<dd><p>Walks through nested dictionaries and extracts function information.</p>
+<p>Args:
+arr: The root dictionary of the nested dictionaries.
+level: The current level of traversal. Default is 0.
+path: The current path to the dictionary being processed. Default is an empty list.
+data: A list to store the extracted function information. Default is an empty list.
+contents: The source code of the file. Default is None.</p>
+<p>Returns:
+data: A list containing function information extracted from the nested dictionaries.</p>
+<p>Raises:
+None.</p>
+<p>Notes:
+This function uses recursion to traverse the nested dictionaries and extract function information. It processes ‘class’ and ‘func’ keys in each dictionary.</p>
+</dd></dl>
+
+</section>
+<section id="module-docunator.patch">
+<span id="docunator-patch-module"></span><h2>docunator.patch module<a class="headerlink" href="#module-docunator.patch" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="docunator.patch.create_patch">
+<span class="sig-prename descclassname"><span class="pre">docunator.patch.</span></span><span class="sig-name descname"><span class="pre">create_patch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modified_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">patch_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/docunator/patch.html#create_patch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docunator.patch.create_patch" title="Link to this definition"></a></dt>
+<dd><p>Create patch file from two different files</p>
+<p>Args:
+original_file (str): The file to be considered as the original one.</p>
+<blockquote>
+<div><p>This file is read to get the original lines.
+Mandatory argument.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>modified_file (str): The file to be considered as the modified one.</dt><dd><p>This file is read to get the modified lines.
+Mandatory argument.</p>
+</dd>
+<dt>patch_file (str): The file where the patch file will be written.</dt><dd><p>Mandatory argument.</p>
+</dd>
+</dl>
+<p>Returns:
+None: This function does not return any value.</p>
+<blockquote>
+<div><p>It only writes the patch file to the given location.</p>
+</div></blockquote>
+<p>Raises:
+FileNotFoundError: If any of the given files are not found.</p>
+<p>Notes:
+This function uses the diff library to find the differences between
+the original and modified files and writes them to a patch file.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docunator.patch.find_function_end">
+<span class="sig-prename descclassname"><span class="pre">docunator.patch.</span></span><span class="sig-name descname"><span class="pre">find_function_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_line</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_line</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/docunator/patch.html#find_function_end"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docunator.patch.find_function_end" title="Link to this definition"></a></dt>
+<dd><p>Finds the index of the last line of a function definition in a list of lines.</p>
+<p>Args:
+lines (List[str]): A list of strings representing the lines of a file.
+start_line (int): The index of the first line of the function definition.
+end_line (int): The index of the first line after the function definition.</p>
+<p>Returns:
+int: The index of the last line of the function definition.</p>
+<p>Raises:
+ValueError: If the function definition is not found between start_line and end_line.</p>
+<p>Notes:
+- The function definition is assumed to start with ‘def’ followed by a function name and parentheses.
+- The function definition is assumed to end with a ‘:’ or an empty line.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docunator.patch.format_docstring">
+<span class="sig-prename descclassname"><span class="pre">docunator.patch.</span></span><span class="sig-name descname"><span class="pre">format_docstring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">docstring</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indentation</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/docunator/patch.html#format_docstring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docunator.patch.format_docstring" title="Link to this definition"></a></dt>
+<dd><p>Calculates the sum of two numbers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num1</strong> (<em>float</em><em> or </em><em>int</em>) – The first number to be added. Required.</p></li>
+<li><p><strong>num2</strong> (<em>float</em><em> or </em><em>int</em>) – The second number to be added. Required.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The sum of num1 and num2.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>sum (float or int)</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>TypeError</strong> – If num1 or num2 is not a number.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function does not handle complex numbers.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docunator.patch.get_indentation">
+<span class="sig-prename descclassname"><span class="pre">docunator.patch.</span></span><span class="sig-name descname"><span class="pre">get_indentation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_line</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span> <span class="pre">or</span> <span class="pre">-1</span></span></span><a class="reference internal" href="_modules/docunator/patch.html#get_indentation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docunator.patch.get_indentation" title="Link to this definition"></a></dt>
+<dd><p>This function determines the indentation level of the code block following the given definition line.</p>
+<p>Args:
+lines: A list of strings representing lines of code.
+start_line: The index of the line in the list where the definition line is located.</p>
+<p>Returns:
+The number of spaces representing the indentation level of the code block following the definition line.</p>
+<p>Raises:
+ValueError if the definition line is not found or the code block following the definition line is not present.</p>
+<p>Notes:
+The function searches for the definition line by looking for the string ‘def’ at the beginning of a line. Once the definition line is found, it searches for the first line following the definition line that contains code (ignoring comments). The indentation level is determined by the number of spaces at the beginning of that line.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docunator.patch.inject_docstring">
+<span class="sig-prename descclassname"><span class="pre">docunator.patch.</span></span><span class="sig-name descname"><span class="pre">inject_docstring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">docstring_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/docunator/patch.html#inject_docstring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docunator.patch.inject_docstring" title="Link to this definition"></a></dt>
+<dd><p>Injects docstrings from a provided docstring_data list into the corresponding functions
+in the given file_path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_path</strong> (<em>str</em>) – The path to the python file to be updated.</p></li>
+<li><p><strong>docstring_data</strong> (<em>list</em>) – <p>A list of dictionaries, each representing a docstring patch.
+Each dictionary should have the following keys:</p>
+<blockquote>
+<div><ul>
+<li><p>’start_line’: The line number where the docstring starts.</p></li>
+<li><p>’end_line’: The line number where the docstring ends.</p></li>
+<li><p>’docstring’: The docstring text to be injected.</p></li>
+</ul>
+</div></blockquote>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing the original lines and the modified lines.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>FileNotFoundError</strong> – If the provided file_path does not exist.</p></li>
+<li><p><strong>SyntaxError</strong> – If the provided python file contains syntax errors.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function assumes that the docstring is located on a new line right before the function definition.
+The docstring is considered to be the lines between the start_line and end_line (inclusive).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docunator.patch.patch">
+<span class="sig-prename descclassname"><span class="pre">docunator.patch.</span></span><span class="sig-name descname"><span class="pre">patch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">patch_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">docstring_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/docunator/patch.html#patch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docunator.patch.patch" title="Link to this definition"></a></dt>
+<dd><p>Patch a file and generate a patch file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file</strong> (<em>str</em>) – The path to the file to be patched.</p></li>
+<li><p><strong>temp_dir</strong> (<em>str</em>) – The directory to store the temporary copy of the file.</p></li>
+<li><p><strong>patch_dir</strong> (<em>str</em>) – The directory to store the generated patch file.</p></li>
+<li><p><strong>docstring_data</strong> (<em>str</em>) – The docstring data to be injected into the file.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None. A patch file will be created in the specified patch directory.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>FileNotFoundError</strong> – If the original file or the temporary or patch directories do not exist.</p></li>
+<li><p><strong>PermissionError</strong> – If the original file or the temporary copy of the file do not have write permissions.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function uses the <cite>uuid</cite> and <cite>os</cite> modules for generating unique IDs and checking file and directory paths.
+It also uses the <cite>shutil</cite> module for copying files and the <cite>inject_docstring</cite> and <cite>create_patch</cite> helper functions.</p>
+</dd></dl>
+
+</section>
+<section id="module-docunator.summarize">
+<span id="docunator-summarize-module"></span><h2>docunator.summarize module<a class="headerlink" href="#module-docunator.summarize" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="docunator.summarize.summarize">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docunator.summarize.</span></span><span class="sig-name descname"><span class="pre">summarize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/docunator/summarize.html#summarize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docunator.summarize.summarize" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="docunator.summarize.summarize.generate">
+<span class="sig-name descname"><span class="pre">generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attempts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/docunator/summarize.html#summarize.generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docunator.summarize.summarize.generate" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>code</strong> (<em>str</em>) – The code of the function you want to document.</p></li>
+<li><p><strong>attempts</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of attempts to generate a docstring. Default is 3.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A valid docstring for the given function.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>None</strong> – </p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function uses a language model to generate a docstring based on a given code snippet. It attempts to generate a docstring multiple times,
+and returns the first valid one it generates.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-docunator">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-docunator" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Chris Watkins.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

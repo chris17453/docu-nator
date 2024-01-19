@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>docunator.parse &mdash; docu-nator 1.00 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=da1d7f10"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            docu-nator
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">docu-nator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">docunator.parse</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for docunator.parse</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">ast</span>
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
+
+<div class="viewcode-block" id="FunctionAnalyzer">
+<a class="viewcode-back" href="../../docunator.html#docunator.parse.FunctionAnalyzer">[docs]</a>
+<span class="k">class</span> <span class="nc">FunctionAnalyzer</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">NodeVisitor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;root&#39;</span><span class="p">:{}}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">defined_classes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">defined_functions</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nesting_level</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scope</span><span class="o">=</span><span class="p">[]</span>
+    
+<div class="viewcode-block" id="FunctionAnalyzer.get_scope">
+<a class="viewcode-back" href="../../docunator.html#docunator.parse.FunctionAnalyzer.get_scope">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_scope</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">append</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the current scope for the given object.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            self: The object for which to get the scope.</span>
+<span class="sd">            append: An optional string representing a new scope element to add to the</span>
+<span class="sd">                    current scope. If None, the current scope is returned as a string.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            A string representing the current scope for the given object. If append is</span>
+<span class="sd">            provided, the new scope is returned as a string with the new element</span>
+<span class="sd">            appended.</span>
+<span class="sd">        </span>
+<span class="sd">        Raises:</span>
+<span class="sd">            None</span>
+<span class="sd">        </span>
+<span class="sd">        Notes:</span>
+<span class="sd">            The scope is represented as a list of strings, where each string is the</span>
+<span class="sd">            name of a containing namespace. The first element is always the global</span>
+<span class="sd">            namespace.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">append</span><span class="p">:</span>
+            <span class="n">scope</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scope</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">scope</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">append</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">scope</span><span class="p">)</span>
+        
+        
+        <span class="k">return</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scope</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FunctionAnalyzer.visit_Module">
+<a class="viewcode-back" href="../../docunator.html#docunator.parse.FunctionAnalyzer.visit_Module">[docs]</a>
+    <span class="k">def</span> <span class="nf">visit_Module</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Visits a given ast.Module node and recursively visits its body elements.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            node (ast.Module): The ast.Module node to visit.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None.</span>
+<span class="sd">        </span>
+<span class="sd">        Raises:</span>
+<span class="sd">            None.</span>
+<span class="sd">        </span>
+<span class="sd">        Notes:</span>
+<span class="sd">            This function is a part of the AstVisitor class and is responsible for visiting</span>
+<span class="sd">            ast.Module nodes. It iterates through the body of the node and visits each</span>
+<span class="sd">            ast.ClassDef or ast.FunctionDef element. For other types of elements, it calls</span>
+<span class="sd">            the visit method of the AstVisitor instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">body</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">ClassDef</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">visit_ClassDef</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>  
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">FunctionDef</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">visit_FunctionDef</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">visit</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FunctionAnalyzer.get_obj">
+<a class="viewcode-back" href="../../docunator.html#docunator.parse.FunctionAnalyzer.get_obj">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">scope</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the multi-dimentional object based on dot style location in scope.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            self: An instance of the class.</span>
+<span class="sd">            scope: A string representing the scope of the object to get. The string should be in the format &quot;var.var.var...&quot; or &quot;func.func.func...&quot; or &quot;class.class.class...&quot;.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            The object that matches the given scope.</span>
+<span class="sd">        </span>
+<span class="sd">        Raises:</span>
+<span class="sd">            KeyError: If the given scope cannot be found in the data dictionary of the instance.</span>
+<span class="sd">            ValueError: If the given scope is an empty string or has no parts.</span>
+<span class="sd">        </span>
+<span class="sd">        Notes:</span>
+<span class="sd">            This function searches for the given scope in the data dictionary of the instance. It uses the given scope string to traverse the dictionary by splitting it into parts and checking if each part is a key in the current object. If a part is found, the function moves to the next part until the final object is reached. If a part is not found, an error is raised.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cur_obj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;root&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">scope</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">scope</span> <span class="o">!=</span><span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="n">path</span><span class="o">=</span><span class="n">scope</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+        
+            <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">path</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="s1">&#39;vars&#39;</span> <span class="ow">in</span> <span class="n">cur_obj</span> <span class="ow">and</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">cur_obj</span><span class="p">[</span><span class="s1">&#39;vars&#39;</span><span class="p">]:</span>
+                        <span class="n">cur_obj</span><span class="o">=</span><span class="n">cur_obj</span><span class="p">[</span><span class="s1">&#39;vars&#39;</span><span class="p">][</span><span class="n">part</span><span class="p">]</span>
+                    <span class="k">elif</span> <span class="s1">&#39;ret&#39;</span> <span class="ow">in</span> <span class="n">cur_obj</span> <span class="ow">and</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">cur_obj</span><span class="p">[</span><span class="s1">&#39;ret&#39;</span><span class="p">]:</span>
+                        <span class="n">cur_obj</span><span class="o">=</span><span class="n">cur_obj</span><span class="p">[</span><span class="s1">&#39;ret&#39;</span><span class="p">][</span><span class="n">part</span><span class="p">]</span>
+                    <span class="k">elif</span> <span class="s1">&#39;args&#39;</span> <span class="ow">in</span> <span class="n">cur_obj</span> <span class="ow">and</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">cur_obj</span><span class="p">[</span><span class="s1">&#39;args&#39;</span><span class="p">]:</span>
+                        <span class="n">cur_obj</span><span class="o">=</span><span class="n">cur_obj</span><span class="p">[</span><span class="s1">&#39;args&#39;</span><span class="p">][</span><span class="n">part</span><span class="p">]</span>
+                    <span class="k">elif</span> <span class="s1">&#39;func&#39;</span> <span class="ow">in</span> <span class="n">cur_obj</span> <span class="ow">and</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">cur_obj</span><span class="p">[</span><span class="s1">&#39;func&#39;</span><span class="p">]:</span>
+                        <span class="n">cur_obj</span><span class="o">=</span><span class="n">cur_obj</span><span class="p">[</span><span class="s1">&#39;func&#39;</span><span class="p">][</span><span class="n">part</span><span class="p">]</span>
+                    <span class="k">elif</span> <span class="s1">&#39;class&#39;</span> <span class="ow">in</span> <span class="n">cur_obj</span> <span class="ow">and</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">cur_obj</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">]:</span>
+                        <span class="n">cur_obj</span><span class="o">=</span><span class="n">cur_obj</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">][</span><span class="n">part</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+                        <span class="nb">print</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cant find </span><span class="si">{</span><span class="n">part</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="n">exit</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">cur_obj</span></div>
+
+
+<div class="viewcode-block" id="FunctionAnalyzer.add_class">
+<a class="viewcode-back" href="../../docunator.html#docunator.parse.FunctionAnalyzer.add_class">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">scope</span><span class="p">,</span><span class="n">name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds a new class to an object in the given scope.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            scope (str): The name of the scope to search for the object.</span>
+<span class="sd">            name (str): The name of the new class to be added.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None. The function modifies the object in the given scope.</span>
+<span class="sd">        </span>
+<span class="sd">        Raises:</span>
+<span class="sd">            KeyError: If the scope does not exist.</span>
+<span class="sd">            TypeError: If the scope is not a dictionary.</span>
+<span class="sd">        </span>
+<span class="sd">        Notes:</span>
+<span class="sd">            The function assumes that the object in the given scope is a dictionary.</span>
+<span class="sd">            If the class with the given name already exists, it is not overwritten.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">obj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_obj</span><span class="p">(</span><span class="n">scope</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;class&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+            <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">{}</span>
+
+        <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">][</span><span class="n">name</span><span class="p">]</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="n">name</span><span class="p">,</span>
+                    <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;class&#39;</span><span class="p">}</span></div>
+
+    
+<div class="viewcode-block" id="FunctionAnalyzer.add_func">
+<a class="viewcode-back" href="../../docunator.html#docunator.parse.FunctionAnalyzer.add_func">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">scope</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">,</span><span class="n">column</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds a function definition to a given scope in a symbol table.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            scope (str): The name of the scope in which to add the function.</span>
+<span class="sd">            name (str): The name of the function to add.</span>
+<span class="sd">            start (int): The line number at which the function starts.</span>
+<span class="sd">            end (int): The line number at which the function ends.</span>
+<span class="sd">            column (int): The column number at which the function starts.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None. The function simply modifies the given symbol table.</span>
+<span class="sd">        </span>
+<span class="sd">        Raises:</span>
+<span class="sd">            KeyError: If the given scope is not present in the symbol table.</span>
+<span class="sd">        </span>
+<span class="sd">        Notes:</span>
+<span class="sd">            If the given scope is not present in the symbol table, an error is raised.</span>
+<span class="sd">            If the function with the given name already exists in the scope, it is overwritten.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">obj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_obj</span><span class="p">(</span><span class="n">scope</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;func&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+            <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;func&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">{}</span>
+
+        <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;func&#39;</span><span class="p">][</span><span class="n">name</span><span class="p">]</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="n">name</span><span class="p">,</span><span class="s1">&#39;start&#39;</span><span class="p">:</span><span class="n">start</span><span class="p">,</span><span class="s1">&#39;end&#39;</span><span class="p">:</span><span class="n">end</span><span class="p">,</span><span class="s1">&#39;col&#39;</span><span class="p">:</span><span class="n">column</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="FunctionAnalyzer.add_var">
+<a class="viewcode-back" href="../../docunator.html#docunator.parse.FunctionAnalyzer.add_var">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">scope</span><span class="p">,</span><span class="n">name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds a variable to the given scope&#39;s dictionary.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            scope (str): The name of the scope (e.g. &#39;global&#39; or &#39;local&#39;).</span>
+<span class="sd">            name (str): The name of the variable to add.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None.</span>
+<span class="sd">        </span>
+<span class="sd">        Raises:</span>
+<span class="sd">            KeyError: If the given scope is not found.</span>
+<span class="sd">        </span>
+<span class="sd">        Notes:</span>
+<span class="sd">            If the scope&#39;s dictionary does not already contain a &#39;vars&#39; key, one will be created and the variable will be added to it.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">obj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_obj</span><span class="p">(</span><span class="n">scope</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;vars&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+            <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;vars&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">{}</span>
+
+        <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;vars&#39;</span><span class="p">][</span><span class="n">name</span><span class="p">]</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="n">name</span><span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="FunctionAnalyzer.add_ret">
+<a class="viewcode-back" href="../../docunator.html#docunator.parse.FunctionAnalyzer.add_ret">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_ret</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">scope</span><span class="p">,</span><span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds a value to a list of returns for a given scope.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            scope (str): The name of the scope to add the return to.</span>
+<span class="sd">            value (any): The value to be added to the list of returns.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None. This function modifies the existing dictionary for the given scope.</span>
+<span class="sd">        </span>
+<span class="sd">        Raises:</span>
+<span class="sd">            KeyError: If the given scope does not exist.</span>
+<span class="sd">        </span>
+<span class="sd">        Notes:</span>
+<span class="sd">            This function assumes that the dictionary for the given scope has a key named &#39;ret&#39; which is a list.</span>
+<span class="sd">            If the key &#39;ret&#39; does not exist, it will be created with an empty list.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">obj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_obj</span><span class="p">(</span><span class="n">scope</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;ret&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+            <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;ret&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[]</span>
+
+        <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;ret&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FunctionAnalyzer.add_arg">
+<a class="viewcode-back" href="../../docunator.html#docunator.parse.FunctionAnalyzer.add_arg">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_arg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">scope</span><span class="p">,</span><span class="n">arg</span><span class="p">,</span><span class="n">default</span><span class="p">,</span><span class="n">has_default</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds an argument to an object&#39;s list of arguments.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            scope (str): The name of the scope (context) in which the argument is defined.</span>
+<span class="sd">            arg (str): The name of the argument.</span>
+<span class="sd">            default (Any): The default value for the argument, if it has one. This is an optional argument.</span>
+<span class="sd">            has_default (bool, optional): A boolean indicating whether the argument has a default value. Default is False.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None. This function modifies the given object in place.</span>
+<span class="sd">        </span>
+<span class="sd">        Raises:</span>
+<span class="sd">            KeyError: If the given scope is not found in the object.</span>
+<span class="sd">        </span>
+<span class="sd">        Notes:</span>
+<span class="sd">            This function modifies the given object directly, so it should be used with caution.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">obj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_obj</span><span class="p">(</span><span class="n">scope</span><span class="p">)</span>
+        <span class="n">item</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="n">arg</span><span class="p">,</span><span class="s1">&#39;has_default&#39;</span><span class="p">:</span><span class="n">has_default</span><span class="p">,</span><span class="s1">&#39;scope&#39;</span><span class="p">:</span><span class="n">scope</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">has_default</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+            <span class="n">item</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">default</span>
+        <span class="k">if</span> <span class="s1">&#39;args&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+            <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;args&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">{}</span>
+
+        <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;args&#39;</span><span class="p">][</span><span class="n">arg</span><span class="p">]</span><span class="o">=</span><span class="n">item</span></div>
+
+
+<div class="viewcode-block" id="FunctionAnalyzer.visit_ClassDef">
+<a class="viewcode-back" href="../../docunator.html#docunator.parse.FunctionAnalyzer.visit_ClassDef">[docs]</a>
+    <span class="k">def</span> <span class="nf">visit_ClassDef</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Visits a ClassDef node in the Abstract Syntax Tree (AST).</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            node (ast.ClassDef): The node to visit.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        </span>
+<span class="sd">        Raises:</span>
+<span class="sd">            None</span>
+<span class="sd">        </span>
+<span class="sd">        Notes:</span>
+<span class="sd">            This function is called when visiting a ClassDef node in the Abstract Syntax Tree (AST).</span>
+<span class="sd">            It sets up the necessary data structures for the class, such as the scope and nesting level.</span>
+<span class="sd">            It also adds the class to the symbol table and calls the generic visit method to process the class body.</span>
+<span class="sd">            Finally, it cleans up the scope and nesting level.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">class_name</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">scope</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_scope</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nesting_level</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_class</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span><span class="n">class_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scope</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generic_visit</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scope</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nesting_level</span> <span class="o">-=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="FunctionAnalyzer.visit_FunctionDef">
+<a class="viewcode-back" href="../../docunator.html#docunator.parse.FunctionAnalyzer.visit_FunctionDef">[docs]</a>
+    <span class="k">def</span> <span class="nf">visit_FunctionDef</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Visits a FunctionDef node in the abstract syntax tree.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            node (ast.FunctionDef): The node to visit.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None.</span>
+<span class="sd">        </span>
+<span class="sd">        Raises:</span>
+<span class="sd">            None.</span>
+<span class="sd">        </span>
+<span class="sd">        Notes:</span>
+<span class="sd">            This function is responsible for adding function definitions to the symbol table.</span>
+<span class="sd">            It also handles adding arguments to the symbol table.</span>
+<span class="sd">        </span>
+<span class="sd">            The function takes a FunctionDef node as an argument. The node contains information about the name,</span>
+<span class="sd">            arguments, and body of the function.</span>
+<span class="sd">        </span>
+<span class="sd">            The function first adds the function to the symbol table with its scope, name, start and end line numbers,</span>
+<span class="sd">            and column offset. It then handles adding the function&#39;s arguments to the symbol table.</span>
+<span class="sd">        </span>
+<span class="sd">            The function uses helper methods get_scope(), add_func(), add_arg(), and defined_functions to perform these tasks.</span>
+<span class="sd">        </span>
+<span class="sd">            The function also handles nested functions by adding their scopes to the defined_functions list and updating the nesting level.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">function_name</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">scope</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_scope</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scope</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="n">inner_scope</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_scope</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_func</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span><span class="n">function_name</span><span class="p">,</span><span class="n">node</span><span class="o">.</span><span class="n">lineno</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">node</span><span class="o">.</span><span class="n">end_lineno</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">node</span><span class="o">.</span><span class="n">col_offset</span><span class="p">)</span>
+        <span class="n">defaults</span><span class="o">=</span><span class="p">{}</span>
+        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">defaults</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Constant</span><span class="p">):</span>
+                <span class="n">arg_name</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">defaults</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">node</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">defaults</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">arg</span><span class="p">)]</span><span class="o">.</span><span class="n">arg</span>
+                <span class="n">defaults</span><span class="p">[</span><span class="n">arg_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">value</span>                
+
+        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">args</span><span class="p">:</span>
+            <span class="n">has_default</span><span class="o">=</span><span class="kc">False</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span>
+            <span class="k">if</span> <span class="n">arg</span><span class="o">.</span><span class="n">arg</span> <span class="ow">in</span> <span class="n">defaults</span><span class="p">:</span>
+                <span class="n">has_default</span><span class="o">=</span><span class="kc">True</span>
+                <span class="n">default</span><span class="o">=</span><span class="n">defaults</span><span class="p">[</span><span class="n">arg</span><span class="o">.</span><span class="n">arg</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_arg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_scope</span><span class="p">(),</span><span class="n">arg</span><span class="o">.</span><span class="n">arg</span><span class="p">,</span><span class="n">default</span><span class="p">,</span><span class="n">has_default</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">defined_functions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">inner_scope</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nesting_level</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generic_visit</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="n">inner_scope</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_scope</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scope</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nesting_level</span> <span class="o">-=</span> <span class="mi">1</span></div>
+
+        
+
+<div class="viewcode-block" id="FunctionAnalyzer.visit_Assign">
+<a class="viewcode-back" href="../../docunator.html#docunator.parse.FunctionAnalyzer.visit_Assign">[docs]</a>
+    <span class="k">def</span> <span class="nf">visit_Assign</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Visits an Assign node in an Abstract Syntax Tree (AST). Assigns variables based on targets in the node.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            self (ASTVisitor): The instance of the ASTVisitor class.</span>
+<span class="sd">            node (ast.Assign): The node to visit.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None.</span>
+<span class="sd">        </span>
+<span class="sd">        Raises:</span>
+<span class="sd">            None.</span>
+<span class="sd">        </span>
+<span class="sd">        Notes:</span>
+<span class="sd">            This function visits an Assign node in an Abstract Syntax Tree (AST) and assigns variables based on the targets in the node.</span>
+<span class="sd">            If a target is an attribute, the variable name is in the format &quot;variable_name.attribute_name&quot;.</span>
+<span class="sd">            If a target is a Name, the variable name is simply &quot;variable_name&quot;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">targets</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Attribute</span><span class="p">):</span>
+                    <span class="n">variable_name</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">id</span><span class="o">+</span><span class="s2">&quot;.&quot;</span><span class="o">+</span><span class="n">target</span><span class="o">.</span><span class="n">attr</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">add_var</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_scope</span><span class="p">(),</span><span class="n">variable_name</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Name</span><span class="p">):</span>
+                    <span class="n">variable_name</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">add_var</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_scope</span><span class="p">(),</span><span class="n">variable_name</span><span class="p">)</span>
+
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>        
+        <span class="bp">self</span><span class="o">.</span><span class="n">nesting_level</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generic_visit</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nesting_level</span> <span class="o">-=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="FunctionAnalyzer.visit_Return">
+<a class="viewcode-back" href="../../docunator.html#docunator.parse.FunctionAnalyzer.visit_Return">[docs]</a>
+    <span class="k">def</span> <span class="nf">visit_Return</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Visits a return statement node in the abstract syntax tree.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            node: ast.Return: The node representing the return statement.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None. This method updates the symbol table and the return type.</span>
+<span class="sd">        </span>
+<span class="sd">        Raises:</span>
+<span class="sd">            None.</span>
+<span class="sd">        </span>
+<span class="sd">        Notes:</span>
+<span class="sd">            This method gets the type of the return value and adds it to the current scope.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_type</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_ret</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_scope</span><span class="p">(),</span><span class="n">val</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FunctionAnalyzer.get_type">
+<a class="viewcode-back" href="../../docunator.html#docunator.parse.FunctionAnalyzer.get_type">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function determines the type of a given node in an Abstract Syntax Tree (AST).</span>
+<span class="sd">        </span>
+<span class="sd">        The node can be a call, name, string, number, list, dictionary, constant, boolean operation,</span>
+<span class="sd">        binary operation, comparison, or function call.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            node (ast.Node): The node to determine the type of.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            A dictionary with the keys &#39;type&#39; and &#39;value&#39; if the node is a variable, function, class, or dictionary key.</span>
+<span class="sd">            A string representing the type if the node is a basic type (int, float, str, list, dict, function, class, or unknown).</span>
+<span class="sd">        </span>
+<span class="sd">        Raises:</span>
+<span class="sd">            None</span>
+<span class="sd">        </span>
+<span class="sd">        Notes:</span>
+<span class="sd">            - If the node is a variable, the value is the variable name.</span>
+<span class="sd">            - If the node is a function, the value is the function name.</span>
+<span class="sd">            - If the node is a class, the value is the class name.</span>
+<span class="sd">            - If the node is a dictionary key, the value is the key string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Call</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">func</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Name</span><span class="p">)</span> <span class="ow">and</span> <span class="n">node</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">defined_functions</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s1">&#39;function&#39;</span>
+            <span class="k">return</span> <span class="s1">&#39;method/external&#39;</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Name</span><span class="p">):</span>
+            <span class="n">scope</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_scope</span><span class="p">()</span>
+            <span class="n">scope2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_scope</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="n">cur_obj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_obj</span><span class="p">(</span><span class="n">scope</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="s1">&#39;vars&#39;</span> <span class="ow">in</span> <span class="n">cur_obj</span> <span class="ow">and</span> <span class="n">node</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span>  <span class="n">cur_obj</span><span class="p">[</span><span class="s1">&#39;vars&#39;</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;variable&#39;</span><span class="p">,</span><span class="s1">&#39;value&#39;</span><span class="p">:</span><span class="n">node</span><span class="o">.</span><span class="n">id</span><span class="p">}</span>
+            <span class="k">elif</span> <span class="n">scope2</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">defined_functions</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;function&#39;</span><span class="p">,</span><span class="s1">&#39;value&#39;</span><span class="p">:</span><span class="n">node</span><span class="o">.</span><span class="n">id</span><span class="p">}</span>
+            <span class="k">elif</span> <span class="n">scope2</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">defined_classes</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;class&#39;</span><span class="p">,</span><span class="s1">&#39;value&#39;</span><span class="p">:</span><span class="n">node</span><span class="o">.</span><span class="n">id</span><span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;UNK&#39;</span><span class="p">,</span><span class="s1">&#39;value&#39;</span><span class="p">:</span><span class="n">node</span><span class="o">.</span><span class="n">id</span><span class="p">}</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s1">&#39;str&#39;</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Num</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s1">&#39;int&#39;</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="s1">&#39;float&#39;</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">List</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">elts</span><span class="p">:</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;[ </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">get_type</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">elts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="si">}</span><span class="s1"> ]&#39;</span>
+            <span class="k">return</span> <span class="s1">&#39;list&#39;</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Dict</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s1">&#39;{ &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dict_keys</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="o">+</span><span class="s2">&quot; }&quot;</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Constant</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">BoolOp</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s1">&#39;bool&#39;</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">BinOp</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_binop_type</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Compare</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s1">&#39;bool&#39;</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Call</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s1">&#39;function: &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_function_call_path</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Attribute</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s1">&#39;attr:&#39;</span><span class="o">+</span><span class="n">node</span><span class="o">.</span><span class="n">attr</span>
+
+        <span class="k">return</span> <span class="s1">&#39;unknown&#39;</span></div>
+
+
+<div class="viewcode-block" id="FunctionAnalyzer.get_binop_type">
+<a class="viewcode-back" href="../../docunator.html#docunator.parse.FunctionAnalyzer.get_binop_type">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_binop_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determines the type of binary operation based on the types of its operands.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            self: An instance of the Abstract Syntax Tree (AST) class.</span>
+<span class="sd">            node: A node from the abstract syntax tree representing a binary operation.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The type of the binary operation. Can be either &#39;int&#39;, &#39;float&#39;, or &#39;mixed&#39;.</span>
+<span class="sd">        </span>
+<span class="sd">        Raises:</span>
+<span class="sd">            None</span>
+<span class="sd">        </span>
+<span class="sd">        Notes:</span>
+<span class="sd">            This function is used by the TypeChecker class to ensure type compatibility</span>
+<span class="sd">            during type checking.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># This function deduces the type of binary operations (like arithmetic)</span>
+        <span class="n">left_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_type</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">left</span><span class="p">)</span>
+        <span class="n">right_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_type</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">right</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">left_type</span> <span class="o">==</span> <span class="n">right_type</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">left_type</span>
+        <span class="k">return</span> <span class="s1">&#39;mixed&#39;</span></div>
+
+ 
+<div class="viewcode-block" id="FunctionAnalyzer.get_dict_keys">
+<a class="viewcode-back" href="../../docunator.html#docunator.parse.FunctionAnalyzer.get_dict_keys">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_dict_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the keys of a dictonary.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            node (ast.AST): The node from which to retrieve dictionary keys.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            str: A comma-separated string of the keys in the dictionary represented by the node.</span>
+<span class="sd">        </span>
+<span class="sd">        Raises:</span>
+<span class="sd">            None</span>
+<span class="sd">        </span>
+<span class="sd">        Notes:</span>
+<span class="sd">            This function retrieves the keys of a given dictionary node and returns them as a comma-separated string.</span>
+<span class="sd">            The keys can be string literals, variable names, or constants.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># This method retrieves the keys of the dictionary</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">keys</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Str</span><span class="p">):</span>
+                <span class="n">keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">s</span><span class="p">)</span>  <span class="c1"># String literal key</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Name</span><span class="p">):</span>
+                <span class="n">keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>  <span class="c1"># Variable name as key</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Constant</span><span class="p">):</span>
+                <span class="n">keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>  <span class="c1"># Constant key (Python 3.8+)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;unknown&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FunctionAnalyzer.get_function_call_path">
+<a class="viewcode-back" href="../../docunator.html#docunator.parse.FunctionAnalyzer.get_function_call_path">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_function_call_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructs the full function call path from an ast node.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            node (ast.Call): The AST node representing a function call.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The full function call path as a string.</span>
+<span class="sd">        </span>
+<span class="sd">        Raises:</span>
+<span class="sd">            None</span>
+<span class="sd">        </span>
+<span class="sd">        Notes:</span>
+<span class="sd">            If the node represents a simple function call (i.e., a function call with no dotted notation),</span>
+<span class="sd">            the method returns the function name as the call path.</span>
+<span class="sd">        </span>
+<span class="sd">            If the node represents a method call or an attribute of an object/module,</span>
+<span class="sd">            the method recursively calls itself with the value of the object/module as the argument,</span>
+<span class="sd">            and appends the attribute/method name to the returned call path using a &#39;.&#39; separator.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># This method constructs the full function call path</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">func</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Name</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">node</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="n">id</span>  <span class="c1"># Simple function call</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">func</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Attribute</span><span class="p">):</span>
+            <span class="c1"># Method call or attribute of an object/module</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_function_call_path</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">node</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="n">attr</span>
+        <span class="k">return</span> <span class="s1">&#39;unknown&#39;</span>    </div>
+</div>
+
+
+<div class="viewcode-block" id="read_file">
+<a class="viewcode-back" href="../../docunator.html#docunator.parse.read_file">[docs]</a>
+<span class="k">def</span> <span class="nf">read_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reads the content of a file and returns it as a string.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        file_path (str): The path to the file to be read.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        str: The content of the file as a string.</span>
+<span class="sd">    </span>
+<span class="sd">    Raises:</span>
+<span class="sd">        FileNotFoundError: If the file does not exist at the provided path.</span>
+<span class="sd">        Exception: If any other error occurs while reading the file.</span>
+<span class="sd">    </span>
+<span class="sd">    Notes:</span>
+<span class="sd">        This function uses the built-in `open()` function to read the content of a file.</span>
+<span class="sd">        It returns an error message if the file is not found or an error occurs during reading.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;File not found.&quot;</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;An error occurred: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span></div>
+
+
+<div class="viewcode-block" id="walk_data">
+<a class="viewcode-back" href="../../docunator.html#docunator.parse.walk_data">[docs]</a>
+<span class="k">def</span> <span class="nf">walk_data</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">path</span><span class="o">=</span><span class="p">[],</span><span class="n">data</span><span class="o">=</span><span class="p">[],</span><span class="n">contents</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Walks through nested dictionaries and extracts function information.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">    arr: The root dictionary of the nested dictionaries.</span>
+<span class="sd">    level: The current level of traversal. Default is 0.</span>
+<span class="sd">    path: The current path to the dictionary being processed. Default is an empty list.</span>
+<span class="sd">    data: A list to store the extracted function information. Default is an empty list.</span>
+<span class="sd">    contents: The source code of the file. Default is None.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">    data: A list containing function information extracted from the nested dictionaries.</span>
+<span class="sd">    </span>
+<span class="sd">    Raises:</span>
+<span class="sd">    None.</span>
+<span class="sd">    </span>
+<span class="sd">    Notes:</span>
+<span class="sd">    This function uses recursion to traverse the nested dictionaries and extract function information. It processes &#39;class&#39; and &#39;func&#39; keys in each dictionary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#print(f&quot;Level {level} - Size: {len(arr)}&quot;)</span>
+    <span class="k">if</span> <span class="s1">&#39;class&#39;</span> <span class="ow">in</span> <span class="n">arr</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">],</span><span class="nb">dict</span><span class="p">)</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">sub_arr</span> <span class="ow">in</span> <span class="n">arr</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">]:</span>
+            <span class="c1">#print(level*&#39; &#39;+&#39;Class: &#39;+sub_arr) </span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">][</span><span class="n">sub_arr</span><span class="p">],</span><span class="nb">dict</span><span class="p">):</span>
+                <span class="n">walk_data</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">][</span><span class="n">sub_arr</span><span class="p">],</span> <span class="n">level</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span><span class="n">path</span><span class="o">+</span><span class="p">[</span><span class="n">sub_arr</span><span class="p">],</span><span class="n">data</span><span class="p">,</span><span class="n">contents</span><span class="p">)</span>
+                <span class="c1">#data.append(res)</span>
+
+
+    <span class="k">if</span> <span class="s1">&#39;func&#39;</span> <span class="ow">in</span> <span class="n">arr</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="s1">&#39;func&#39;</span><span class="p">],</span><span class="nb">dict</span><span class="p">)</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">sub_arr</span> <span class="ow">in</span> <span class="n">arr</span><span class="p">[</span><span class="s1">&#39;func&#39;</span><span class="p">]:</span>
+            <span class="c1">#print(level*&#39; &#39;+&#39;func: &#39;+sub_arr) </span>
+            <span class="n">start</span><span class="o">=</span><span class="n">arr</span><span class="p">[</span><span class="s1">&#39;func&#39;</span><span class="p">][</span><span class="n">sub_arr</span><span class="p">][</span><span class="s1">&#39;start&#39;</span><span class="p">]</span>
+            <span class="n">end</span><span class="o">=</span><span class="n">arr</span><span class="p">[</span><span class="s1">&#39;func&#39;</span><span class="p">][</span><span class="n">sub_arr</span><span class="p">][</span><span class="s1">&#39;end&#39;</span><span class="p">]</span>
+            <span class="n">item</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;start_line&#39;</span><span class="p">:</span><span class="n">start</span><span class="p">,</span>
+             <span class="s1">&#39;end_line&#39;</span><span class="p">:</span><span class="n">end</span><span class="p">,</span>
+             <span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="o">+</span><span class="p">[</span><span class="n">sub_arr</span><span class="p">]),</span>
+             <span class="s1">&#39;code&#39;</span><span class="p">:</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">contents</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]),</span>
+             <span class="s1">&#39;col&#39;</span><span class="p">:</span><span class="n">arr</span><span class="p">[</span><span class="s1">&#39;func&#39;</span><span class="p">][</span><span class="n">sub_arr</span><span class="p">][</span><span class="s1">&#39;col&#39;</span><span class="p">]</span>
+             
+             <span class="p">}</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="s1">&#39;func&#39;</span><span class="p">][</span><span class="n">sub_arr</span><span class="p">],</span><span class="nb">dict</span><span class="p">):</span>
+                <span class="n">res</span><span class="o">=</span><span class="n">walk_data</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="s1">&#39;func&#39;</span><span class="p">][</span><span class="n">sub_arr</span><span class="p">],</span> <span class="n">level</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span><span class="n">path</span><span class="o">+</span><span class="p">[</span><span class="n">sub_arr</span><span class="p">],</span><span class="n">data</span><span class="p">,</span><span class="n">contents</span><span class="p">)</span>
+                <span class="c1">#data.append(res)</span>
+    <span class="n">pprint</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data</span></div>
+
+
+
+<div class="viewcode-block" id="parse">
+<a class="viewcode-back" href="../../docunator.html#docunator.parse.parse">[docs]</a>
+<span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parses a Python file and returns a list of dictionaries containing information about each function and class in the file.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        file_path (str): The path to the Python file to be parsed.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        list: A list of dictionaries, where each dictionary contains information about a function or class in the file.</span>
+<span class="sd">    </span>
+<span class="sd">    Raises:</span>
+<span class="sd">        FileNotFoundError: If the specified file does not exist.</span>
+<span class="sd">        SyntaxError: If there is a syntax error in the file.</span>
+<span class="sd">        TypeError: If the file path is not a string.</span>
+<span class="sd">    </span>
+<span class="sd">    Notes:</span>
+<span class="sd">        The &#39;contents&#39; and &#39;data&#39; variables are used internally and are not part of the public API.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">contents</span><span class="o">=</span><span class="n">read_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+    <span class="n">parsed_ast</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span>
+    <span class="n">analyzer</span> <span class="o">=</span> <span class="n">FunctionAnalyzer</span><span class="p">()</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">visit</span><span class="p">(</span><span class="n">parsed_ast</span><span class="p">)</span>
+    
+    <span class="n">data</span><span class="o">=</span><span class="n">walk_data</span><span class="p">(</span><span class="n">analyzer</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;root&#39;</span><span class="p">],</span><span class="n">contents</span><span class="o">=</span><span class="n">contents</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">),</span><span class="n">data</span><span class="o">=</span><span class="p">[])</span>
+
+    <span class="k">return</span> <span class="n">data</span></div>
+
+    <span class="c1">#return [{&#39;name&#39;:&#39;x=1&#39;}]</span>
+
+
+
+<span class="c1">#pprint.pprint(analyzer.returns)</span>
+<span class="c1">#pprint.pprint(analyzer.variables)</span>
+<span class="c1">#pprint.pprint(analyzer.returns)</span>
+<span class="c1">#pprint.pprint(analyzer.defined_classes)</span>
+<span class="c1">#pprint.pprint(analyzer.defined_functions)</span>
+<span class="c1">#pprint.pprint(analyzer.data)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Chris Watkins.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

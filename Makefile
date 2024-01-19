@@ -8,7 +8,7 @@ clean:
 	@rm ./_temp/* -f
 
 docstring: clean
-	@python -m .src.main --dir src
+	@python -m docu-nator.main --dir docu-nator
 
 patch:
 	@./patch.sh

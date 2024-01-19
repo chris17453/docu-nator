@@ -4,7 +4,7 @@ import difflib
 import uuid
 
 def create_patch(original_file, modified_file, patch_file):
-    '''Create patch file from two different files
+    """Create patch file from two different files
     
     Args:
     original_file (str): The file to be considered as the original one.
@@ -26,7 +26,7 @@ def create_patch(original_file, modified_file, patch_file):
     Notes:
     This function uses the diff library to find the differences between
     the original and modified files and writes them to a patch file.
-    '''
+    """
     with open(original_file, 'r') as file:
         original_lines = file.readlines()
     with open(modified_file, 'r') as file:
@@ -39,7 +39,7 @@ def create_patch(original_file, modified_file, patch_file):
         file.writelines(diff)
 
 def find_function_end(lines, start_line, end_line):
-    '''Finds the index of the last line of a function definition in a list of lines.
+    """Finds the index of the last line of a function definition in a list of lines.
     
     Args:
     lines (List[str]): A list of strings representing the lines of a file.
@@ -55,7 +55,7 @@ def find_function_end(lines, start_line, end_line):
     Notes:
     - The function definition is assumed to start with 'def' followed by a function name and parentheses.
     - The function definition is assumed to end with a ':' or an empty line.
-    '''
+    """
     #print ("Information")
     #print(lines)
 
@@ -66,7 +66,7 @@ def find_function_end(lines, start_line, end_line):
     return end_line - 1
 
 def get_indentation(lines, start_line):
-    '''get_indentation(lines: List[str], start_line: int) -> int or -1
+    """get_indentation(lines: List[str], start_line: int) -> int or -1
     
     This function determines the indentation level of the code block following the given definition line.
     
@@ -82,7 +82,7 @@ def get_indentation(lines, start_line):
     
     Notes:
     The function searches for the definition line by looking for the string 'def' at the beginning of a line. Once the definition line is found, it searches for the first line following the definition line that contains code (ignoring comments). The indentation level is determined by the number of spaces at the beginning of that line.
-    '''
+    """
     def_line = -1
     inside_def = False
     # Find def line
@@ -106,7 +106,7 @@ def get_indentation(lines, start_line):
 
 
 def format_docstring(docstring, indentation):
-    '''Calculates the sum of two numbers.
+    """Calculates the sum of two numbers.
     
     Args:
         num1 (float or int): The first number to be added. Required.
@@ -120,7 +120,7 @@ def format_docstring(docstring, indentation):
     
     Notes:
         This function does not handle complex numbers.
-    '''
+    """
     indent = ' ' * indentation
     lines=docstring.split("\n")
     output=[]
@@ -129,7 +129,7 @@ def format_docstring(docstring, indentation):
     return "\n".join(output)+"\n"
 
 def inject_docstring(file_path, docstring_data):
-    '''
+    """
     Injects docstrings from a provided docstring_data list into the corresponding functions
     in the given file_path.
     
@@ -151,7 +151,7 @@ def inject_docstring(file_path, docstring_data):
     Notes:
         This function assumes that the docstring is located on a new line right before the function definition.
         The docstring is considered to be the lines between the start_line and end_line (inclusive).
-    '''
+    """
     with open(file_path, 'r') as file:
         original_lines = file.readlines()
 
@@ -186,7 +186,7 @@ def inject_docstring(file_path, docstring_data):
     return original_lines, modified_lines
 
 def patch(file,temp_dir,patch_dir,docstring_data):
-    '''Patch a file and generate a patch file.
+    """Patch a file and generate a patch file.
     
     Args:
         file (str): The path to the file to be patched.
@@ -204,7 +204,7 @@ def patch(file,temp_dir,patch_dir,docstring_data):
     Notes:
         This function uses the `uuid` and `os` modules for generating unique IDs and checking file and directory paths.
         It also uses the `shutil` module for copying files and the `inject_docstring` and `create_patch` helper functions.
-    '''
+    """
     original_file = file
     temp_dir = temp_dir
     #print(original_file)

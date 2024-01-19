@@ -4,7 +4,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, StoppingCriteria, 
 
 class summarize:
     def __init__(self,model_dir=None):
-        '''Args:
+        """Args:
             model_dir (str, optional): Path to the directory containing the pre-trained model. Defaults to None.
         
         Returns:
@@ -16,7 +16,7 @@ class summarize:
         Notes:
             If the pad_token is not explicitly set in the tokenizer, it will be set to the end-of-sentence token.
             The model will be moved to the CUDA device if available.
-        '''
+        """
         self.tokenizer = AutoTokenizer.from_pretrained(model_dir)
         self.model = AutoModelForCausalLM.from_pretrained(model_dir, trust_remote_code=True,  torch_dtype="auto",)
         self.model.cuda()
@@ -26,7 +26,7 @@ class summarize:
             self.model.config.pad_token_id = self.tokenizer.eos_token_id
 
     def generate(self, code, attempts=3):
-        '''Args:
+        """Args:
             code (str): The code of the function you want to document.
             attempts (int, optional): The number of attempts to generate a docstring. Default is 3.
         
@@ -39,7 +39,7 @@ class summarize:
         Notes:
             This function uses a language model to generate a docstring based on a given code snippet. It attempts to generate a docstring multiple times,
             and returns the first valid one it generates.
-        '''
+        """
         # Required sections
         required_sections = ["Args:", "Returns:", "Raises:", "Notes:"]
 
@@ -74,9 +74,9 @@ Notes:\
 
             if all(section in output_text for section in required_sections):
                 
-                output_text=output_text.replace("'''",'')
-                output_text=output_text.replace('"""','')
-                output_text="'''"+output_text+"'''"
+                output_text=output_text.replace('\"\"\"','')
+                output_text=output_text.replace("\'\'\'",'')
+                output_text="""""+output_text+"""""
                 return output_text
 
         return None

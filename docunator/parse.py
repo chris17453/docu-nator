@@ -10,7 +10,7 @@ class FunctionAnalyzer(ast.NodeVisitor):
         self.scope=[]
     
     def get_scope(self,append=None):
-        '''Gets the current scope for the given object.
+        """Gets the current scope for the given object.
         
         Args:
             self: The object for which to get the scope.
@@ -29,7 +29,7 @@ class FunctionAnalyzer(ast.NodeVisitor):
             The scope is represented as a list of strings, where each string is the
             name of a containing namespace. The first element is always the global
             namespace.
-        '''
+        """
         if append:
             scope=self.scope.copy()
             scope.append(append)
@@ -39,7 +39,7 @@ class FunctionAnalyzer(ast.NodeVisitor):
         return ".".join(self.scope)
 
     def visit_Module(self, node):
-        '''Visits a given ast.Module node and recursively visits its body elements.
+        """Visits a given ast.Module node and recursively visits its body elements.
         
         Args:
             node (ast.Module): The ast.Module node to visit.
@@ -55,7 +55,7 @@ class FunctionAnalyzer(ast.NodeVisitor):
             ast.Module nodes. It iterates through the body of the node and visits each
             ast.ClassDef or ast.FunctionDef element. For other types of elements, it calls
             the visit method of the AstVisitor instance.
-        '''
+        """
         for item in node.body:
             if isinstance(item, ast.ClassDef):
                 self.visit_ClassDef(item)  
@@ -65,7 +65,8 @@ class FunctionAnalyzer(ast.NodeVisitor):
                 self.visit(item)
 
     def get_obj(self,scope):
-        '''Args:
+        """Gets the multi-dimentional object based on dot style location in scope.
+        Args:
             self: An instance of the class.
             scope: A string representing the scope of the object to get. The string should be in the format "var.var.var..." or "func.func.func..." or "class.class.class...".
         
@@ -78,7 +79,7 @@ class FunctionAnalyzer(ast.NodeVisitor):
         
         Notes:
             This function searches for the given scope in the data dictionary of the instance. It uses the given scope string to traverse the dictionary by splitting it into parts and checking if each part is a key in the current object. If a part is found, the function moves to the next part until the final object is reached. If a part is not found, an error is raised.
-        '''
+        """
         cur_obj=self.data['root']
         if len(scope)>0 and scope !="":
             path=scope.split(".")
@@ -102,7 +103,7 @@ class FunctionAnalyzer(ast.NodeVisitor):
         return cur_obj
 
     def add_class(self,scope,name):
-        '''Adds a new class to an object in the given scope.
+        """Adds a new class to an object in the given scope.
         
         Args:
             scope (str): The name of the scope to search for the object.
@@ -118,7 +119,7 @@ class FunctionAnalyzer(ast.NodeVisitor):
         Notes:
             The function assumes that the object in the given scope is a dictionary.
             If the class with the given name already exists, it is not overwritten.
-        '''
+        """
         obj=self.get_obj(scope)
         if 'class' not in obj:
             obj['class']={}
@@ -127,7 +128,7 @@ class FunctionAnalyzer(ast.NodeVisitor):
                     'type':'class'}
     
     def add_func(self,scope,name,start,end,column):
-        '''Adds a function definition to a given scope in a symbol table.
+        """Adds a function definition to a given scope in a symbol table.
         
         Args:
             scope (str): The name of the scope in which to add the function.
@@ -145,7 +146,7 @@ class FunctionAnalyzer(ast.NodeVisitor):
         Notes:
             If the given scope is not present in the symbol table, an error is raised.
             If the function with the given name already exists in the scope, it is overwritten.
-        '''
+        """
         obj=self.get_obj(scope)
         if 'func' not in obj:
             obj['func']={}
@@ -153,7 +154,7 @@ class FunctionAnalyzer(ast.NodeVisitor):
         obj['func'][name]={'name':name,'start':start,'end':end,'col':column}
 
     def add_var(self,scope,name):
-        '''Adds a variable to the given scope's dictionary.
+        """Adds a variable to the given scope's dictionary.
         
         Args:
             scope (str): The name of the scope (e.g. 'global' or 'local').
@@ -167,7 +168,7 @@ class FunctionAnalyzer(ast.NodeVisitor):
         
         Notes:
             If the scope's dictionary does not already contain a 'vars' key, one will be created and the variable will be added to it.
-        '''
+        """
         obj=self.get_obj(scope)
         if 'vars' not in obj:
             obj['vars']={}
@@ -176,7 +177,7 @@ class FunctionAnalyzer(ast.NodeVisitor):
 
 
     def add_ret(self,scope,value):
-        '''Adds a value to a list of returns for a given scope.
+        """Adds a value to a list of returns for a given scope.
         
         Args:
             scope (str): The name of the scope to add the return to.
@@ -191,7 +192,7 @@ class FunctionAnalyzer(ast.NodeVisitor):
         Notes:
             This function assumes that the dictionary for the given scope has a key named 'ret' which is a list.
             If the key 'ret' does not exist, it will be created with an empty list.
-        '''
+        """
         obj=self.get_obj(scope)
         if 'ret' not in obj:
             obj['ret']=[]
@@ -199,7 +200,7 @@ class FunctionAnalyzer(ast.NodeVisitor):
         obj['ret'].append(value)
 
     def add_arg(self,scope,arg,default,has_default=False):
-        '''Adds an argument to an object's list of arguments.
+        """Adds an argument to an object's list of arguments.
         
         Args:
             scope (str): The name of the scope (context) in which the argument is defined.
@@ -215,7 +216,7 @@ class FunctionAnalyzer(ast.NodeVisitor):
         
         Notes:
             This function modifies the given object directly, so it should be used with caution.
-        '''
+        """
         obj=self.get_obj(scope)
         item={'name':arg,'has_default':has_default,'scope':scope}
         if has_default==True:
@@ -226,7 +227,7 @@ class FunctionAnalyzer(ast.NodeVisitor):
         obj['args'][arg]=item
 
     def visit_ClassDef(self, node):
-        '''Visits a ClassDef node in the Abstract Syntax Tree (AST).
+        """Visits a ClassDef node in the Abstract Syntax Tree (AST).
         
         Args:
             node (ast.ClassDef): The node to visit.
@@ -242,7 +243,7 @@ class FunctionAnalyzer(ast.NodeVisitor):
             It sets up the necessary data structures for the class, such as the scope and nesting level.
             It also adds the class to the symbol table and calls the generic visit method to process the class body.
             Finally, it cleans up the scope and nesting level.
-        '''
+        """
         class_name = node.name
         scope=self.get_scope()
         self.nesting_level += 1
@@ -253,7 +254,7 @@ class FunctionAnalyzer(ast.NodeVisitor):
         self.nesting_level -= 1
 
     def visit_FunctionDef(self, node):
-        '''Visits a FunctionDef node in the abstract syntax tree.
+        """Visits a FunctionDef node in the abstract syntax tree.
         
         Args:
             node (ast.FunctionDef): The node to visit.
@@ -277,7 +278,7 @@ class FunctionAnalyzer(ast.NodeVisitor):
             The function uses helper methods get_scope(), add_func(), add_arg(), and defined_functions to perform these tasks.
         
             The function also handles nested functions by adding their scopes to the defined_functions list and updating the nesting level.
-        '''
+        """
         function_name = node.name
         scope=self.get_scope()
         self.scope.append(node.name)
@@ -307,7 +308,7 @@ class FunctionAnalyzer(ast.NodeVisitor):
         
 
     def visit_Assign(self, node):
-        '''
+        """
         Visits an Assign node in an Abstract Syntax Tree (AST). Assigns variables based on targets in the node.
         
         Args:
@@ -324,7 +325,7 @@ class FunctionAnalyzer(ast.NodeVisitor):
             This function visits an Assign node in an Abstract Syntax Tree (AST) and assigns variables based on the targets in the node.
             If a target is an attribute, the variable name is in the format "variable_name.attribute_name".
             If a target is a Name, the variable name is simply "variable_name".
-        '''
+        """
         try:
             for target in node.targets:
                 if isinstance(target, ast.Attribute):
@@ -342,7 +343,7 @@ class FunctionAnalyzer(ast.NodeVisitor):
         self.nesting_level -= 1
 
     def visit_Return(self, node):
-        '''Visits a return statement node in the abstract syntax tree.
+        """Visits a return statement node in the abstract syntax tree.
         
         Args:
             node: ast.Return: The node representing the return statement.
@@ -355,33 +356,32 @@ class FunctionAnalyzer(ast.NodeVisitor):
         
         Notes:
             This method gets the type of the return value and adds it to the current scope.
-        '''
+        """
         val=self.get_type(node.value)
         self.add_ret(self.get_scope(),val)
 
     def get_type(self, node):
-        '''get_type(node: ast.Node) -> dict or str
+        """This function determines the type of a given node in an Abstract Syntax Tree (AST).
         
-        This function determines the type of a given node in an Abstract Syntax Tree (AST).
         The node can be a call, name, string, number, list, dictionary, constant, boolean operation,
         binary operation, comparison, or function call.
         
         Args:
-        node (ast.Node): The node to determine the type of.
+            node (ast.Node): The node to determine the type of.
         
         Returns:
-        A dictionary with the keys 'type' and 'value' if the node is a variable, function, class, or dictionary key.
-        A string representing the type if the node is a basic type (int, float, str, list, dict, function, class, or unknown).
+            A dictionary with the keys 'type' and 'value' if the node is a variable, function, class, or dictionary key.
+            A string representing the type if the node is a basic type (int, float, str, list, dict, function, class, or unknown).
         
         Raises:
-        None
+            None
         
         Notes:
-        - If the node is a variable, the value is the variable name.
-        - If the node is a function, the value is the function name.
-        - If the node is a class, the value is the class name.
-        - If the node is a dictionary key, the value is the key string.
-        '''
+            - If the node is a variable, the value is the variable name.
+            - If the node is a function, the value is the function name.
+            - If the node is a class, the value is the class name.
+            - If the node is a dictionary key, the value is the key string.
+        """
 
         if isinstance(node, ast.Call):
             if isinstance(node.func, ast.Name) and node.func.id in self.defined_functions:
@@ -427,7 +427,7 @@ class FunctionAnalyzer(ast.NodeVisitor):
         return 'unknown'
 
     def get_binop_type(self, node):
-        '''Determines the type of binary operation based on the types of its operands.
+        """Determines the type of binary operation based on the types of its operands.
         
         Args:
             self: An instance of the Abstract Syntax Tree (AST) class.
@@ -442,7 +442,7 @@ class FunctionAnalyzer(ast.NodeVisitor):
         Notes:
             This function is used by the TypeChecker class to ensure type compatibility
             during type checking.
-        '''
+        """
         # This function deduces the type of binary operations (like arithmetic)
         left_type = self.get_type(node.left)
         right_type = self.get_type(node.right)
@@ -451,7 +451,9 @@ class FunctionAnalyzer(ast.NodeVisitor):
         return 'mixed'
  
     def get_dict_keys(self, node):
-        '''Args:
+        """Returns the keys of a dictonary.
+        
+        Args:
             node (ast.AST): The node from which to retrieve dictionary keys.
         
         Returns:
@@ -463,7 +465,7 @@ class FunctionAnalyzer(ast.NodeVisitor):
         Notes:
             This function retrieves the keys of a given dictionary node and returns them as a comma-separated string.
             The keys can be string literals, variable names, or constants.
-        '''
+        """
         # This method retrieves the keys of the dictionary
         keys = []
         for key in node.keys:
@@ -478,7 +480,7 @@ class FunctionAnalyzer(ast.NodeVisitor):
         return ', '.join(keys)
 
     def get_function_call_path(self, node):
-        '''Constructs the full function call path from an ast node.
+        """Constructs the full function call path from an ast node.
         
         Args:
             node (ast.Call): The AST node representing a function call.
@@ -496,7 +498,7 @@ class FunctionAnalyzer(ast.NodeVisitor):
             If the node represents a method call or an attribute of an object/module,
             the method recursively calls itself with the value of the object/module as the argument,
             and appends the attribute/method name to the returned call path using a '.' separator.
-        '''
+        """
         # This method constructs the full function call path
         if isinstance(node.func, ast.Name):
             return node.func.id  # Simple function call
@@ -506,7 +508,7 @@ class FunctionAnalyzer(ast.NodeVisitor):
         return 'unknown'    
 
 def read_file(file_path):
-    '''Reads the content of a file and returns it as a string.
+    """Reads the content of a file and returns it as a string.
     
     Args:
         file_path (str): The path to the file to be read.
@@ -521,7 +523,7 @@ def read_file(file_path):
     Notes:
         This function uses the built-in `open()` function to read the content of a file.
         It returns an error message if the file is not found or an error occurs during reading.
-    '''
+    """
     try:
         with open(file_path, 'r') as file:
             return file.read()
@@ -531,7 +533,7 @@ def read_file(file_path):
         return f"An error occurred: {e}"
 
 def walk_data(arr, level=0,path=[],data=[],contents=None):
-    '''Walks through nested dictionaries and extracts function information.
+    """Walks through nested dictionaries and extracts function information.
     
     Args:
     arr: The root dictionary of the nested dictionaries.
@@ -548,7 +550,7 @@ def walk_data(arr, level=0,path=[],data=[],contents=None):
     
     Notes:
     This function uses recursion to traverse the nested dictionaries and extract function information. It processes 'class' and 'func' keys in each dictionary.
-    '''
+    """
     #print(f"Level {level} - Size: {len(arr)}")
     if 'class' in arr and isinstance(arr['class'],dict)==True:
         for sub_arr in arr['class']:
@@ -579,7 +581,7 @@ def walk_data(arr, level=0,path=[],data=[],contents=None):
 
 
 def parse(file_path):
-    '''Parses a Python file and returns a list of dictionaries containing information about each function and class in the file.
+    """Parses a Python file and returns a list of dictionaries containing information about each function and class in the file.
     
     Args:
         file_path (str): The path to the Python file to be parsed.
@@ -594,7 +596,7 @@ def parse(file_path):
     
     Notes:
         The 'contents' and 'data' variables are used internally and are not part of the public API.
-    '''
+    """
     contents=read_file(file_path)
     parsed_ast = ast.parse(contents)
     analyzer = FunctionAnalyzer()

@@ -11,6 +11,8 @@ transformers = "*"
 argparse = "*"
 sphinx = "*"
 sphinx-rtd-theme = "*"
+pydocstyle = "*"
+rinohtype = "*"
 
 [dev-packages]
 

@@ -17,6 +17,10 @@ The Docu-nator project, available on GitHub with its live documentation, was dev
 
 Docu-nator exemplifies the seamless integration of AI into secure environments, automating the documentation process with minimal manual intervention. It stands as a testament to the power of AI in enhancing internal software development processes.
 
+## How it works
+
+docunator generates docstrings from the eximination of individual functions in code. The functions are sent to a llm for summarization and converted into a docstring. This docstring is then stored as a patch, which is applied by git. sphynx is then run to convert the code into documentation.
+
 ## Preq
 
 - run the sphinx quicstart to generate the boiler plate

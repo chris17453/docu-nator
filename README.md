@@ -50,6 +50,6 @@ make patch
 
 ## VScode docstrings now show the definitions
 
-![vscode](./assets/vs_code.png)
+![vscode](./assets/vs_code2.png)
 
 
